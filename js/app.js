@@ -299,6 +299,41 @@ function renderOccGrid(cat){
 }
 
 /* ================================================================
+   OCCUPATION LINES — shared helper
+   ================================================================ */
+var OCC_LINES_MAP = {
+  doctor:     ['May your healing hands always be guided by wisdom! 🩺💙','Your dedication to saving lives inspires us all! 🏥✨','Wishing good health to the one who keeps others healthy! 🩺❤️'],
+  engineer:   ['May your brilliant mind build great things! ⚙️🌟','Your precision and dedication are truly admirable! 💡✨','Keep engineering a better tomorrow! ⚙️💪'],
+  teacher:    ['Your guidance shapes futures and changes lives! 📚🌟','Thank you for being the lamp of knowledge! 🕯️📖✨','The world is better because of teachers like you! 📚❤️'],
+  student:    ['May knowledge guide your journey to success! 🎓✨','Keep learning, keep growing — your best days are ahead! 📖🌟','Shine bright, star student! 🎓💫'],
+  businessman:['May your ventures bring great success! 💼📈✨','Your entrepreneurial spirit is truly inspiring! 🚀💡','Wishing continued growth and prosperity! 💼🌟'],
+  farmer:     ['Your hard work feeds the nation! 🌾🙏✨','The soil you tend with love blesses us all! 🌱💛','Jai Kisan! 🌾❤️ May your harvest be bountiful!'],
+  lawyer:     ['May justice always be your guide! ⚖️🌟','Your dedication to the truth inspires all! ⚖️✨','Wishing clarity and wisdom in all your endeavors! ⚖️💙'],
+  police:     ['Thank you for keeping us safe! 👮🙏✨','Your bravery and service are our shield! 👮💪🌟','Saluting your dedication to protect and serve! 👮🇮🇳'],
+  soldier:    ['Saluting your bravery and sacrifice! 🪖🇮🇳💪','A true hero who guards our nation! 🪖🌟✨','Your courage protects millions — Jai Hind! 🇮🇳🙏'],
+  artist:     ['May your creativity continue to inspire the world! 🎨🌟','Art is the language of the soul — keep creating! 🎶✨','Your talent makes the world more beautiful! 🎨💛'],
+  nurse:      ['Your compassion is the heart of healing! 💉❤️✨','Thank you for caring with such dedication! 🏥🙏💛','Angels walk among us — and you are one! 💉🌟'],
+  software:   ['May your code always run bug-free! 💻🚀✨','Building the digital future — one line at a time! 💻🌟','Your innovations make life easier for millions! 💻💡'],
+  chef:       ['May your kitchen always be filled with love and flavor! 👨‍🍳❤️✨','You turn ingredients into magic! 🍴🌟💛','Wishing a feast of happiness in your life! 👨‍🍳🎊'],
+  athlete:    ['May you always run towards greatness! 🏆💪✨','Your dedication and grit are an inspiration! 🥇🌟','Champions are made from hard work — keep winning! 🏆⚡'],
+  scientist:  ['May your discoveries change the world! 🔬🌟✨','Curiosity and brilliance define you! 🔬💡','Wishing breakthroughs and great discoveries ahead! 🔬🚀'],
+  journalist: ['May truth always be your north star! 📰🌟✨','Your words shape minds and move hearts! 📰💙','Wishing you stories that matter and moments that inspire! 📰✨'],
+  pilot:      ['May your flights always be smooth and the skies clear! ✈️🌤️✨','You touch the sky every day — keep soaring! ✈️🌟','Wishing blue skies and tailwinds always! ✈️💙'],
+  firefighter:['True heroes run towards danger — saluting you! 🚒💪✨','Your bravery protects countless lives! 🔥🌟🙏','The bravest among us — thank you! 🚒❤️'],
+  homemaker:  ['Your love holds the home and family together! 🏠❤️✨','The unsung hero of every happy family! 🌸💛🙏','A home made with love is the greatest gift! 🏠🌟']
+};
+function buildMessageForOccasion(o){
+  if(!o) return '';
+  var baseMsg = o.wishes[Math.floor(Math.random()*o.wishes.length)] || o.wishes[0] || '';
+  var occVal = ($('#crOccupation')||{}).value || '';
+  if(occVal && OCC_LINES_MAP[occVal]){
+    var lines = OCC_LINES_MAP[occVal];
+    baseMsg = baseMsg + '\n\n' + lines[Math.floor(Math.random()*lines.length)];
+  }
+  return baseMsg;
+}
+
+/* ================================================================
    CREATOR
    ================================================================ */
 function initCreator(){
@@ -347,17 +382,23 @@ function selectOccasion(id){
   curOccId=id;
   var s=$('#crOccasion'); if(s){ s.value=id; }
   var o=findOcc(id); if(!o) return;
-  var m=$('#crMsg'); if(m&&!m.value) m.value=o.wishes[0]||'';
+  var m=$('#crMsg'); if(m) m.value = buildMessageForOccasion(o);
   renderCard(); updatePreviewBg(id);
 }
 function bindCreator(){
   ['crTo','crMsg','crFrom'].forEach(function(id){
     var e=$('#'+id); if(e) e.addEventListener('input',renderCard);
   });
+  var occ=$('#crOccupation');
+  if(occ) occ.addEventListener('change', function(){
+    var sel=$('#crOccasion'), o=findOcc(sel?sel.value:'');
+    if(o){ var m=$('#crMsg'); if(m) m.value = buildMessageForOccasion(o); }
+    renderCard();
+  });
   var s=$('#crOccasion');
   if(s) s.addEventListener('change',function(){
     var o=findOcc(s.value); curOccId=s.value;
-    if(o){var m=$('#crMsg');if(m&&!m.value) m.value=o.wishes[0]||'';}
+    if(o){ var m=$('#crMsg'); if(m) m.value = buildMessageForOccasion(o); }
     renderCard(); updatePreviewBg(s.value);
   });
   var f=$('#crFont');
@@ -366,9 +407,11 @@ function bindCreator(){
   if(ai) ai.addEventListener('click',function(){
     var sel=$('#crOccasion'), o=findOcc(sel?sel.value:'');
     if(!o){toast('🎪 Pick an occasion first!');return;}
-    var msgs=o.wishes;
-    $('#crMsg').value=msgs[Math.floor(Math.random()*msgs.length)];
-    renderCard(); toast('🤖 AI message applied!');
+    var m=$('#crMsg'); if(m) m.value = buildMessageForOccasion(o);
+    renderCard();
+    var occVal = ($('#crOccupation')||{}).value || '';
+    var label = occVal ? ' (' + occVal.charAt(0).toUpperCase() + occVal.slice(1) + ')' : '';
+    toast('🤖 AI message applied' + label + '!');
   });
   var dl=$('#dlBtn'); if(dl) dl.addEventListener('click',dlCard);
   var sh=$('#shareBtn');

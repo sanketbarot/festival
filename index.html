@@ -269,6 +269,13 @@
   </div>
 
   <div class="creator">
+    <div class="cr-preview">
+      <div class="prev-label">LIVE PREVIEW</div>
+      <div class="wish-card" id="wishCard">
+        <div id="crPreviewBg"></div>
+        <div class="wc-inner" id="wcInner"></div>
+      </div>
+    </div>
     <div class="cr-form">
       <div class="fg">
         <label>🎪 Occasion</label>
@@ -277,6 +284,31 @@
       <div class="fg">
         <label>👤 Recipient Name</label>
         <input type="text" id="crTo" class="finput" placeholder="e.g. Dear Priya, Dear Friend..."/>
+      </div>
+      <div class="fg">
+        <label>💼 Occupation <small style="color:var(--text-dim);font-size:.66rem;font-weight:400;text-transform:none;letter-spacing:0">(optional — personalizes AI message)</small></label>
+        <select id="crOccupation" class="finput">
+          <option value="">🙂 General / Not Specified</option>
+          <option value="doctor">🩺 Doctor</option>
+          <option value="engineer">⚙️ Engineer</option>
+          <option value="teacher">📚 Teacher</option>
+          <option value="student">🎓 Student</option>
+          <option value="businessman">💼 Businessman / Entrepreneur</option>
+          <option value="farmer">🌾 Farmer</option>
+          <option value="lawyer">⚖️ Lawyer</option>
+          <option value="police">👮 Police Officer</option>
+          <option value="soldier">🪖 Soldier / Army</option>
+          <option value="artist">🎨 Artist / Musician</option>
+          <option value="nurse">💉 Nurse</option>
+          <option value="software">💻 Software Developer</option>
+          <option value="chef">👨‍🍳 Chef</option>
+          <option value="athlete">🏆 Athlete / Sports Person</option>
+          <option value="scientist">🔬 Scientist / Researcher</option>
+          <option value="journalist">📰 Journalist / Writer</option>
+          <option value="pilot">✈️ Pilot</option>
+          <option value="firefighter">🚒 Firefighter</option>
+          <option value="homemaker">🏠 Homemaker</option>
+        </select>
       </div>
       <div class="fg">
         <label>✍️ Your Message</label>
@@ -311,13 +343,6 @@
       </div>
     </div>
 
-    <div class="cr-preview">
-      <div class="prev-label">LIVE PREVIEW</div>
-      <div class="wish-card" id="wishCard">
-        <div id="crPreviewBg"></div>
-        <div class="wc-inner" id="wcInner"></div>
-      </div>
-    </div>
   </div>
 </section>
 
